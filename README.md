@@ -113,6 +113,7 @@ Les mutations HTML suivent le motif **POST/Redirect/GET** : après réussite, le
 | PATCH | `/api/livres/{id}` | `200`, modification partielle |
 | DELETE | `/api/livres/{id}` | `204`, `404` ou `409` |
 | POST | `/api/livres/{id}/emprunts` | `201`, `404`, `409` ou `422` |
+| GET | `/api/emprunts/{id}` | `200` ou `404` |
 | PATCH | `/api/emprunts/{id}/retour` | `200`, `404` ou `409` |
 
 Exemple :

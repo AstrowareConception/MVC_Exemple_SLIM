@@ -44,6 +44,10 @@ Content-Type: application/json
 PATCH {{baseUrl}}/api/emprunts/1/retour
 Accept: application/json
 
+### Consulter un emprunt
+GET {{baseUrl}}/api/emprunts/1
+Accept: application/json
+
 ### Supprimer un livre sans historique
 DELETE {{baseUrl}}/api/livres/5
 Accept: application/json

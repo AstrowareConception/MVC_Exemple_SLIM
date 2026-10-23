@@ -37,6 +37,7 @@ Content-Type: application/json
 ```
 
 L'échéance est calculée à J+21. Un second emprunt actif sur le même livre produit un conflit `409`.
+La réponse `201` fournit dans `Location` l'URL `GET /api/emprunts/{id}` permettant de relire l'emprunt.
 
 ## Retourner
 

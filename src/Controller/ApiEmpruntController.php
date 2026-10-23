@@ -9,6 +9,7 @@ use App\Model\Exception\EmpruntDejaRetourneException;
 use App\Model\Exception\EmpruntIntrouvableException;
 use App\Model\Exception\LivreIndisponibleException;
 use App\Model\Exception\LivreIntrouvableException;
+use App\Repository\EmpruntRepository;
 use App\Service\EmpruntService;
 use App\View\JsonView;
 use InvalidArgumentException;
@@ -19,8 +20,20 @@ final readonly class ApiEmpruntController
 {
     public function __construct(
         private EmpruntService $service,
+        private EmpruntRepository $emprunts,
         private JsonView $view,
     ) {
+    }
+
+    public function voir(Request $request, Response $response, array $args): Response
+    {
+        $id = Input::positiveId($args['id'] ?? null);
+        $emprunt = $id === null ? null : $this->emprunts->trouver($id);
+        if ($emprunt === null) {
+            return $this->view->error($response, 'EMPRUNT_INTROUVABLE', 'Emprunt introuvable.', 404);
+        }
+
+        return $this->view->render($response, ['data' => $emprunt->toArray()]);
     }
 
     public function emprunter(Request $request, Response $response, array $args): Response

@@ -124,6 +124,24 @@ paths:
                   data: { $ref: '#/components/schemas/Emprunt' }
         '404': { $ref: '#/components/responses/Introuvable' }
         '409': { $ref: '#/components/responses/Conflit' }
+  /api/emprunts/{id}:
+    get:
+      summary: Consulter un emprunt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Emprunt trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Emprunt' }
+        '404': { $ref: '#/components/responses/Introuvable' }
 components:
   parameters:
     IdLivre:

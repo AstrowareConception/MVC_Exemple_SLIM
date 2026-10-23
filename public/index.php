@@ -54,7 +54,7 @@ $csrf = new CsrfGuard($_SESSION['csrf']);
 $livreController = new LivreController($livres, $emprunts, $htmlView, $csrf);
 $empruntController = new EmpruntController($empruntService, $htmlView, $csrf);
 $apiLivreController = new ApiLivreController($livres, $emprunts, $jsonView);
-$apiEmpruntController = new ApiEmpruntController($empruntService, $jsonView);
+$apiEmpruntController = new ApiEmpruntController($empruntService, $emprunts, $jsonView);
 
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();

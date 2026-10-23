@@ -38,4 +38,5 @@ $app->get('/api/livres/{id:[0-9]+}', [$apiLivreController, 'voir']);
 $app->patch('/api/livres/{id:[0-9]+}', [$apiLivreController, 'modifier']);
 $app->delete('/api/livres/{id:[0-9]+}', [$apiLivreController, 'supprimer']);
 $app->post('/api/livres/{id:[0-9]+}/emprunts', [$apiEmpruntController, 'emprunter']);
+$app->get('/api/emprunts/{id:[0-9]+}', [$apiEmpruntController, 'voir']);
 $app->patch('/api/emprunts/{id:[0-9]+}/retour', [$apiEmpruntController, 'retourner']);
