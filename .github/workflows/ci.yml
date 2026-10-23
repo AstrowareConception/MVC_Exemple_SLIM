@@ -1,0 +1,34 @@
+name: Vérifications PHP
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite
+          coverage: none
+
+      - name: Vérifier Composer
+        run: composer validate --no-check-lock
+
+      - name: Installer les dépendances
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Initialiser la base de démonstration
+        run: composer db:fresh
+
+      - name: Vérifier le code et les tests
+        run: composer check

@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info:
+  title: API Bibliothèque MVC
+  version: 1.0.0
+  description: API pédagogique Slim 4 partageant son métier avec une interface HTML.
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/livres:
+    get:
+      summary: Lister et rechercher les livres
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Collection trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Livre' }
+                  meta:
+                    type: object
+    post:
+      summary: Créer un livre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LivreEntree' }
+      responses:
+        '201':
+          description: Livre créé
+          headers:
+            Location:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReponseLivre' }
+        '422': { $ref: '#/components/responses/DonneesInvalides' }
+  /api/livres/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdLivre'
+    get:
+      summary: Consulter un livre et son emprunt actif
+      responses:
+        '200':
+          description: Livre trouvé
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReponseLivre' }
+        '404': { $ref: '#/components/responses/Introuvable' }
+    patch:
+      summary: Modifier partiellement un livre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LivreModification'
+      responses:
+        '200':
+          description: Livre modifié
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReponseLivre' }
+        '404': { $ref: '#/components/responses/Introuvable' }
+        '422': { $ref: '#/components/responses/DonneesInvalides' }
+    delete:
+      summary: Supprimer un livre sans historique
+      responses:
+        '204': { description: Livre supprimé }
+        '404': { $ref: '#/components/responses/Introuvable' }
+        '409': { $ref: '#/components/responses/Conflit' }
+  /api/livres/{id}/emprunts:
+    parameters:
+      - $ref: '#/components/parameters/IdLivre'
+    post:
+      summary: Emprunter un livre pour 21 jours
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [emprunteur_nom, emprunteur_email]
+              properties:
+                emprunteur_nom: { type: string, minLength: 2, maxLength: 120 }
+                emprunteur_email: { type: string, format: email }
+      responses:
+        '201':
+          description: Emprunt créé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Emprunt' }
+        '404': { $ref: '#/components/responses/Introuvable' }
+        '409': { $ref: '#/components/responses/Conflit' }
+        '422': { $ref: '#/components/responses/DonneesInvalides' }
+  /api/emprunts/{id}/retour:
+    patch:
+      summary: Enregistrer le retour d'un emprunt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Retour enregistré
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Emprunt' }
+        '404': { $ref: '#/components/responses/Introuvable' }
+        '409': { $ref: '#/components/responses/Conflit' }
+  /api/emprunts/{id}:
+    get:
+      summary: Consulter un emprunt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Emprunt trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Emprunt' }
+        '404': { $ref: '#/components/responses/Introuvable' }
+components:
+  parameters:
+    IdLivre:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+  schemas:
+    Livre:
+      type: object
+      required: [id, titre, auteur, isbn, annee_publication, disponible]
+      properties:
+        id: { type: integer }
+        titre: { type: string }
+        auteur: { type: string }
+        isbn: { type: [string, 'null'] }
+        annee_publication: { type: [integer, 'null'] }
+        disponible: { type: boolean }
+    LivreEntree:
+      type: object
+      required: [titre, auteur]
+      properties:
+        titre: { type: string, minLength: 1, maxLength: 120 }
+        auteur: { type: string, minLength: 1, maxLength: 120 }
+        isbn: { type: [string, 'null'] }
+        annee_publication: { type: [integer, 'null'], minimum: 1450 }
+    LivreModification:
+      type: object
+      minProperties: 1
+      properties:
+        titre: { type: string, minLength: 1, maxLength: 120 }
+        auteur: { type: string, minLength: 1, maxLength: 120 }
+        isbn: { type: [string, 'null'] }
+        annee_publication: { type: [integer, 'null'], minimum: 1450 }
+    Emprunt:
+      type: object
+      required: [id, livre_id, emprunteur_nom, emprunteur_email, emprunte_le, echeance_le, retourne_le]
+      properties:
+        id: { type: integer }
+        livre_id: { type: integer }
+        emprunteur_nom: { type: string }
+        emprunteur_email: { type: string, format: email }
+        emprunte_le: { type: string, format: date }
+        echeance_le: { type: string, format: date }
+        retourne_le: { type: [string, 'null'], format: date }
+    ReponseLivre:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/Livre' }
+    Erreur:
+      type: object
+      required: [erreur]
+      properties:
+        erreur:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+  responses:
+    Introuvable:
+      description: Ressource introuvable
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erreur' }
+    Conflit:
+      description: L'état courant interdit l'action
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erreur' }
+    DonneesInvalides:
+      description: Une valeur ne respecte pas les invariants
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Erreur' }

@@ -1,0 +1,53 @@
+@baseUrl = http://localhost:8080
+
+### Catalogue
+GET {{baseUrl}}/api/livres
+Accept: application/json
+
+### Recherche
+GET {{baseUrl}}/api/livres?q=verne
+Accept: application/json
+
+### Créer un livre
+POST {{baseUrl}}/api/livres
+Content-Type: application/json
+
+{
+  "titre": "Le Nom de la rose",
+  "auteur": "Umberto Eco",
+  "isbn": "9782253033134",
+  "annee_publication": 1980
+}
+
+### Consulter un livre (adapter l'identifiant)
+GET {{baseUrl}}/api/livres/1
+Accept: application/json
+
+### Modifier uniquement le titre
+PATCH {{baseUrl}}/api/livres/1
+Content-Type: application/json
+
+{
+  "titre": "Titre corrigé"
+}
+
+### Emprunter
+POST {{baseUrl}}/api/livres/1/emprunts
+Content-Type: application/json
+
+{
+  "emprunteur_nom": "Grace Hopper",
+  "emprunteur_email": "grace@example.test"
+}
+
+### Retourner (adapter l'identifiant d'emprunt)
+PATCH {{baseUrl}}/api/emprunts/1/retour
+Accept: application/json
+
+### Consulter un emprunt
+GET {{baseUrl}}/api/emprunts/1
+Accept: application/json
+
+### Supprimer un livre sans historique
+DELETE {{baseUrl}}/api/livres/5
+Accept: application/json
