@@ -1,9 +1,7 @@
 /vendor/
 /database/*.sqlite
-/database/*.sqlite-shm
-/database/*.sqlite-wal
-.env
-.phpunit.cache/
-.phpunit.result.cache
-.DS_Store
-Thumbs.db
+/.phpunit.cache/
+/.env
+/.DS_Store
+/.idea/
+/.vscode/

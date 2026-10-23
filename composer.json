@@ -1,0 +1,41 @@
+{
+  "name": "astroware-conception/bibliotheque-mvc-slim",
+  "description": "Application pédagogique complète : MVC, Slim 4, SQLite, HTML et API JSON",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.2",
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "ext-pdo_sqlite": "*",
+    "slim/psr7": "^1.7",
+    "slim/slim": "^4.14"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "db:init": "php database/init.php",
+    "db:fresh": "php database/init.php --fresh",
+    "serve": "php -S localhost:8080 -t public public/index.php",
+    "lint": "php bin/lint.php",
+    "test": "phpunit --colors=always",
+    "check": [
+      "@lint",
+      "@test"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
